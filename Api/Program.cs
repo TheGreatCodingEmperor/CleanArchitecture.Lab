@@ -4,6 +4,7 @@ using Application.Manager;
 using Application.Manager.Interface;
 using Application.Repository;
 using Application.Repository.Interface;
+using Api.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,13 @@ builder.Services.AddScoped<IInvoiceItemRepository,InvoiceItemRepository>();
 builder.Services.AddScoped<IInvoiceItemManager,InvoiceItemManager>();
 
 builder.Services.AddControllers();
+
+// blazor
+builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -34,10 +42,22 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// blazor
+app.UseStaticFiles();
+
+app.UseRouting();
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-app.MapControllers();
+// blazor
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+    endpoints.MapBlazorHub();
+    endpoints.MapFallbackToPage("/_Host");
+});
+// app.MapControllers();
 
 app.Run();

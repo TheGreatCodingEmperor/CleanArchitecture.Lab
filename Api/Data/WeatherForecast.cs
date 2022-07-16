@@ -1,4 +1,4 @@
-namespace Api;
+namespace Api.Data;
 
 public class WeatherForecast
 {
