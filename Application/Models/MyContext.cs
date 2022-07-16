@@ -10,6 +10,9 @@ public class MyContext : DbContext {
     public DbSet<InvoiceEntity> Invoices { get; set; }
     public DbSet<InvoiceItemEntity> InvoiceItems { get; set; }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    => optionsBuilder.LogTo(Console.WriteLine);
+
     protected override void OnModelCreating (ModelBuilder modelBuilder) {
         modelBuilder.Entity<CustomerEntity> (order => {
             var orderNumber = order.Property (p => p.CustomerId);

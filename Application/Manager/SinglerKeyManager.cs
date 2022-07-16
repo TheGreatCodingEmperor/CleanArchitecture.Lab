@@ -3,17 +3,18 @@ using Application.Manager.Interface;
 using Application.Repository.Interface;
 
 namespace Application.Manager;
-public class SinglerKeyManager<TDomain, TEntity, TKey> : IManager<TDomain, TKey>
+public class SinglerKeyManager<TIRepository, TDomain, TEntity, TKey> : IManager<TDomain, TKey>
     where TDomain : class, new ()
-where TEntity : class, new () {
-    protected  IRepository<TEntity, TKey> Repository {get;set;}
+where TEntity : class, new ()
+where TIRepository : IRepository<TEntity, TKey> {
+    protected TIRepository Repository { get; set; }
 
-    public virtual IEnumerable<TDomain> GetAll(){
-        return Repository.GetAll().Select(x => x.AutoMap<TDomain,TEntity>());
+    public virtual IEnumerable<TDomain> GetAll () {
+        return Repository.GetAll ().Select (x => x.AutoMap<TDomain, TEntity> ());
     }
 
-    public virtual TDomain? GetById(TKey id){
-        return Repository.FindById(id).AutoMap<TDomain,TEntity>();
+    public virtual TDomain? GetById (TKey id) {
+        return Repository.FindById (id).AutoMap<TDomain, TEntity> ();
     }
 
     public virtual TDomain Add (TDomain domain) {

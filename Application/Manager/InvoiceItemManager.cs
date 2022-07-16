@@ -5,7 +5,7 @@ using Core.Domain;
 using DAL.Entity;
 
 namespace Application.Manager;
-public class InvoiceItemManager : SinglerKeyManager<InvoiceItemDomain,InvoiceItemEntity,int>, IInvoiceItemManager {
+public class InvoiceItemManager : SinglerKeyManager<IInvoiceItemRepository,InvoiceItemDomain,InvoiceItemEntity,int>, IInvoiceItemManager {
     public InvoiceItemManager(
         IInvoiceItemRepository repository
     ){

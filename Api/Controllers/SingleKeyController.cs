@@ -7,10 +7,11 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route ("[controller]")]
-public class SingleKeyController<TDto, TDomain, TKey> : ControllerBase
+public class SingleKeyController<TIManagger,TDto, TDomain, TKey> : ControllerBase
 where TDomain : class, new ()
-where TDto : class, new () {
-    protected IManager<TDomain, TKey> ? Manager { get; set; }
+where TDto : class, new () 
+where TIManagger:IManager<TDomain, TKey> {
+    protected TIManagger Manager { get; set; }
 
     [HttpGet]
     public virtual IActionResult GetAll () {

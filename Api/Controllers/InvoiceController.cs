@@ -7,7 +7,7 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class InvoiceController : SingleKeyController<InvoiceDto,InvoiceDomain,int>
+public class InvoiceController : SingleKeyController<IInvoiceManager,InvoiceDto,InvoiceDomain,int>
 {
 
     private readonly ILogger<InvoiceController> _logger;

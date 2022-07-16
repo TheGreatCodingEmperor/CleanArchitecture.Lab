@@ -92,4 +92,18 @@ public class SingleKeyRepository<TEntity, TKey> : IRepository<TEntity, TKey>
             Transaction.Rollback ();
         }
     }
+
+    public IQueryable<TEntity> Paginition(IQueryable<TEntity> query, int? page,int? pageSize)
+    {
+        if (page == -1 && pageSize == -1)
+        {
+            return query;
+        }
+        else
+        {
+            int realPage = page ?? 1;
+            int realPageSize = pageSize ?? 15;
+            return query.Skip((realPage - 1) * realPageSize).Take(realPageSize);
+        }
+    }
 }
