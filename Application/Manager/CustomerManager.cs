@@ -13,12 +13,12 @@ public class CustomerManager : SinglerKeyManager<ICustomerRepository,CustomerDom
     }
 
     public override IEnumerable<CustomerDomain> GetAll(){
-        return Repository.GetAll().Select(x => x.AutoMap<CustomerDomain,CustomerEntity>());
+        return Repository.GetAll();
     }
 
     public (int,IEnumerable<CustomerDomain>) PageQuery(string? firstName, int? page, int? pageSize)
     {
         var result = Repository.PageQuery(firstName, page, pageSize);
-        return (result.count,result.list.Select(x => x.AutoMap<CustomerDomain,CustomerEntity>()));
+        return (result.count,result.list);
     }
 }

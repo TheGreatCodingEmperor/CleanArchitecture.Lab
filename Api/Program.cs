@@ -25,6 +25,8 @@ builder.Services.AddScoped<IInvoiceItemManager,InvoiceItemManager>();
 builder.Services.AddControllers();
 
 // blazor
+// blazor httpclient
+builder.Services.AddHttpClient();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();

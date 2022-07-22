@@ -20,7 +20,7 @@ where TIManagger:IManager<TDomain, TKey> {
     }
 
     [HttpGet ("{id}")]
-    public virtual IActionResult GetAll ([FromRoute] TKey id) {
+    public virtual IActionResult GetById ([FromRoute] TKey id) {
         TDto? result = Manager.GetById (id).AutoMap<TDto, TDomain> ();
         return Ok (result);
     }

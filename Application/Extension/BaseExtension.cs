@@ -11,7 +11,7 @@ public static partial class Extensions {
             if (prop2 == null) {
                 continue;
             } else {
-                prop2.SetValue (dist, prop.GetValue (src));
+                prop.SetValue (dist, prop2.GetValue (src));
             }
         }
         return dist;

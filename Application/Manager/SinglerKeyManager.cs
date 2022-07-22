@@ -6,25 +6,25 @@ namespace Application.Manager;
 public class SinglerKeyManager<TIRepository, TDomain, TEntity, TKey> : IManager<TDomain, TKey>
     where TDomain : class, new ()
 where TEntity : class, new ()
-where TIRepository : IRepository<TEntity, TKey> {
+where TIRepository : IRepository<TDomain,TEntity, TKey> {
     protected TIRepository Repository { get; set; }
 
     public virtual IEnumerable<TDomain> GetAll () {
-        return Repository.GetAll ().Select (x => x.AutoMap<TDomain, TEntity> ());
+        return Repository.GetAll ();
     }
 
     public virtual TDomain? GetById (TKey id) {
-        return Repository.FindById (id).AutoMap<TDomain, TEntity> ();
+        return Repository.FindById (id);
     }
 
     public virtual TDomain Add (TDomain domain) {
-        TEntity entity = Repository.Add (domain.AutoMap<TEntity, TDomain> ());
-        return entity.AutoMap<TDomain, TEntity> ();
+        TDomain result = Repository.Add (domain);
+        return result;
     }
 
     public virtual IEnumerable<TDomain> Add (IEnumerable<TDomain> domains) {
-        IEnumerable<TEntity> entities = Repository.Add (domains.Select (x => x.AutoMap<TEntity, TDomain> ()));
-        return entities.Select (x => x.AutoMap<TDomain, TEntity> ());
+        IEnumerable<TDomain> result = Repository.Add (domains);
+        return result;
     }
 
     public virtual void Delete (TKey id) {
@@ -36,12 +36,12 @@ where TIRepository : IRepository<TEntity, TKey> {
     }
 
     public virtual TDomain Update (TDomain domain) {
-        TEntity entity = Repository.Update (domain.AutoMap<TEntity, TDomain> ());
-        return entity.AutoMap<TDomain, TEntity> ();
+        TDomain result = Repository.Update (domain);
+        return result;
     }
 
     public virtual IEnumerable<TDomain> Update (IEnumerable<TDomain> domains) {
-        IEnumerable<TEntity> entities = Repository.Update (domains.Select (x => x.AutoMap<TEntity, TDomain> ()));
-        return entities.Select (x => x.AutoMap<TDomain, TEntity> ());
+        IEnumerable<TDomain> result = Repository.Update (domains);
+        return result;
     }
 }

@@ -4,55 +4,66 @@ using Application.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage;
+using Application.Extension;
 
 namespace Application.Repository;
-public class SingleKeyRepository<TEntity, TKey> : IRepository<TEntity, TKey>
+public class SingleKeyRepository<TDomain,TEntity, TKey> : IRepository<TDomain,TEntity,TKey>
+    where TDomain : class, new ()
     where TEntity : class, new (){
     protected DbContext? DbContext {get;set;}
     protected IDbContextTransaction? Transaction { get; set; }
-    public TEntity Add (TEntity entity) {
+    public virtual TDomain Add (TDomain domain) {
+        TEntity entity = ToEntity(domain);
         DbContext.Set<TEntity> ().Add (entity);
         DbContext.SaveChanges ();
-        return entity;
+        return ToDomain(entity);
     }
 
-    public IEnumerable<TEntity> Add (IEnumerable<TEntity> entities) {
-        DbContext.Set<TEntity> ().AddRange ();
+    public virtual IEnumerable<TDomain> Add (IEnumerable<TDomain> domains) {
+        IEnumerable<TEntity> entities = domains.Select(x => ToEntity(x));
+        DbContext.Set<TEntity> ().AddRange (entities);
         DbContext.SaveChanges ();
-        return entities;
+        return entities.Select(x => ToDomain(x));
     }
 
-    public void Delete (TKey id) {
-        TEntity? entity = FindById (id);
-        DbContext.Remove (entity);
-        DbContext.SaveChanges ();
-        return;
-    }
-
-    public void Delete (IEnumerable<TKey> ids) {
-        IEnumerable<TEntity> entities = ids.Select (id => FindById (id));
-        DbContext.RemoveRange (entities);
+    public virtual void Delete (TKey id) {
+        TEntity? entity = FindEntityById (id);
+        DbContext.Set<TEntity> ().Remove (entity);
         DbContext.SaveChanges ();
         return;
     }
 
-    public TEntity Update (TEntity entity) {
-        DbContext.Update (entity);
+    public virtual void Delete (IEnumerable<TKey> ids) {
+        IEnumerable<TEntity> entities = ids.Select (id => FindEntityById (id));
+        DbContext.Set<TEntity> ().RemoveRange (entities);
         DbContext.SaveChanges ();
-        return entity;
+        return;
     }
 
-    public IEnumerable<TEntity> Update (IEnumerable<TEntity> entities) {
-        DbContext.UpdateRange (entities);
+    public virtual TDomain Update (TDomain domain) {
+        DbContext.ChangeTracker.Clear();
+        DbContext.Set<TEntity> ().Update (ToEntity(domain));
         DbContext.SaveChanges ();
-        return entities;
+        return domain;
     }
 
-    public IEnumerable<TEntity> GetAll(){
-        return DbContext.Set<TEntity>().AsEnumerable();
+    public virtual IEnumerable<TDomain> Update (IEnumerable<TDomain> domains) {
+        DbContext.ChangeTracker.Clear();
+        DbContext.Set<TEntity> ().UpdateRange (domains.Select(x => ToEntity(x)));
+        DbContext.SaveChanges ();
+        return domains;
     }
 
-    public TEntity? FindById (TKey id) {
+    public virtual IEnumerable<TDomain> GetAll(){
+        return DbContext.Set<TEntity>().AsNoTracking().AsEnumerable().Select(x => ToDomain(x));
+    }
+
+    public virtual TDomain? FindById (TKey id) {
+        var entity = FindEntityById(id);
+        return entity==null?null:ToDomain(entity);
+    }
+
+    public virtual TEntity? FindEntityById (TKey id) {
         IEntityType entityType = DbContext.Model.FindEntityType (typeof (TEntity));
 
         object primayKeyValue = null;
@@ -77,33 +88,41 @@ public class SingleKeyRepository<TEntity, TKey> : IRepository<TEntity, TKey>
         return enity;
     }
 
-    public void BeginTransaction () {
+    public virtual void BeginTransaction () {
         Transaction = DbContext.Database.BeginTransaction ();
     }
 
-    public void Commit () {
+    public virtual void Commit () {
         if (Transaction != null) {
             Transaction.Commit ();
         }
     }
 
-    public void RollBack () {
+    public virtual void RollBack () {
         if (Transaction != null) {
             Transaction.Rollback ();
         }
     }
 
-    public IQueryable<TEntity> Paginition(IQueryable<TEntity> query, int? page,int? pageSize)
+    public virtual IEnumerable<TDomain> Paginition(IQueryable<TEntity> query, int? page,int? pageSize)
     {
         if (page == -1 && pageSize == -1)
         {
-            return query;
+            return query.AsEnumerable().Select(x => ToDomain(x));
         }
         else
         {
             int realPage = page ?? 1;
             int realPageSize = pageSize ?? 15;
-            return query.Skip((realPage - 1) * realPageSize).Take(realPageSize);
+            return query.Skip((realPage - 1) * realPageSize).Take(realPageSize).AsEnumerable().Select(x => ToDomain(x));
         }
+    }
+
+    public virtual TEntity ToEntity(TDomain domain){
+        return domain.AutoMap<TEntity,TDomain>();
+    }
+
+    public virtual TDomain ToDomain(TEntity entity){
+        return entity.AutoMap<TDomain,TEntity>();
     }
 }
