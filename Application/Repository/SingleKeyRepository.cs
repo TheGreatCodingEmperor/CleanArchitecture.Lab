@@ -54,7 +54,7 @@ where TEntity : class, new () {
     public virtual TDomain Update (TDomain domain) {
         TEntity entity = ToEntity (domain);
         TKey id = FindPrimaryKeyValue (entity);
-        TEntity exist = FindEntityById (id);
+        TEntity? exist = FindEntityById (id);
         if (exist == null) {
             throw new Exception ($"{typeof(TEntity).Name} {id} Not Found!");
         }
@@ -68,7 +68,7 @@ where TEntity : class, new () {
         IEnumerable<TEntity> entities = domains.Select (x => ToEntity (x));
         foreach (TEntity entity in entities) {
             TKey id = FindPrimaryKeyValue (entity);
-            TEntity exist = FindEntityById (id);
+            TEntity? exist = FindEntityById (id);
             if (exist == null) {
                 throw new Exception ($"{typeof(TEntity).Name} {id} Not Found!");
             }

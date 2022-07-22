@@ -22,13 +22,13 @@ where TIRepository:IRepository<TDomain,TEntity, TKey> {
 
     [HttpGet ("{id}")]
     public virtual IActionResult GetById ([FromRoute] TKey id) {
-        TDto? result = Repository.FindById (id).ToDto(x);
+        TDto? result = ToDto(Repository.FindById (id));
         return Ok (result);
     }
 
     [HttpPost]
     public virtual IActionResult Add ([FromBody] TDto dto) {
-        TDto? result = Repository.Add (dto.AutoMap<TDomain, TDto> ()).ToDto(x);
+        TDto? result = ToDto(Repository.Add (dto.AutoMap<TDomain, TDto> ()));
         return Ok (result);
     }
 
@@ -41,7 +41,7 @@ where TIRepository:IRepository<TDomain,TEntity, TKey> {
     [HttpPut]
     public virtual IActionResult Update ([FromBody] TDto dto) {
         try {
-            TDto? result = Repository.Update (dto.AutoMap<TDomain, TDto> ());
+            TDto? result = ToDto(Repository.Update (dto.AutoMap<TDomain, TDto> ()));
             return Ok (result);
         } catch (Exception ex) {
             return BadRequest (ex.Message);
@@ -78,7 +78,7 @@ where TIRepository:IRepository<TDomain,TEntity, TKey> {
         }
     }
 
-    public TDto ToDto(TDomain domain){
+    public virtual TDto ToDto(TDomain domain){
         return domain.AutoMap<TDto,TDomain>();
     }
 }
