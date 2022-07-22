@@ -1,46 +1,47 @@
 using Application.Dto;
 using Application.Extension;
-using Application.Manager.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Application.Repository.Interface;
 
 namespace Api.Controllers;
 
 [ApiController]
 [Route ("[controller]")]
-public class SingleKeyController<TIManagger,TDto, TDomain, TKey> : ControllerBase
+public class SingleKeyController<TIRepository,TDto, TDomain,TEntity, TKey> : ControllerBase
 where TDomain : class, new ()
+where TEntity : class, new ()
 where TDto : class, new () 
-where TIManagger:IManager<TDomain, TKey> {
-    protected TIManagger Manager { get; set; }
+where TIRepository:IRepository<TDomain,TEntity, TKey> {
+    protected TIRepository Repository { get; set; }
 
     [HttpGet]
     public virtual IActionResult GetAll () {
-        IEnumerable<TDto>? result = Manager.GetAll ().Select (x => x.AutoMap<TDto, TDomain> ());
+        IEnumerable<TDto>? result = Repository.GetAll ().Select (x => ToDto(x));
         return Ok (result);
     }
 
     [HttpGet ("{id}")]
     public virtual IActionResult GetById ([FromRoute] TKey id) {
-        TDto? result = Manager.GetById (id).AutoMap<TDto, TDomain> ();
+        TDto? result = Repository.FindById (id).ToDto(x);
         return Ok (result);
     }
 
     [HttpPost]
     public virtual IActionResult Add ([FromBody] TDto dto) {
-        TDto? result = Manager.Add (dto.AutoMap<TDomain, TDto> ()).AutoMap<TDto, TDomain> ();
+        TDto? result = Repository.Add (dto.AutoMap<TDomain, TDto> ()).ToDto(x);
         return Ok (result);
     }
 
     [HttpPost ("range")]
     public virtual IActionResult Add ([FromBody] IEnumerable<TDto> dtos) {
-        IEnumerable<TDto>? result = Manager.Add (dtos.Select (x => x.AutoMap<TDomain, TDto> ())).Select (x => x.AutoMap<TDto, TDomain> ());
+        IEnumerable<TDto>? result = Repository.Add (dtos.Select (x => x.AutoMap<TDomain, TDto> ())).Select (x => ToDto(x));
         return Ok (result);
     }
 
     [HttpPut]
     public virtual IActionResult Update ([FromBody] TDto dto) {
         try {
-            TDto? result = Manager.Update (dto.AutoMap<TDomain, TDto> ()).AutoMap<TDto, TDomain> ();
+            TDto? result = Repository.Update (dto.AutoMap<TDomain, TDto> ());
             return Ok (result);
         } catch (Exception ex) {
             return BadRequest (ex.Message);
@@ -50,7 +51,7 @@ where TIManagger:IManager<TDomain, TKey> {
     [HttpPut ("range")]
     public virtual IActionResult Update ([FromBody] IEnumerable<TDto> dto) {
         try {
-            IEnumerable<TDto>? result = Manager.Update (dto.Select(x => x.AutoMap<TDomain, TDto> ())).Select (x => x.AutoMap<TDto, TDomain> ());
+            IEnumerable<TDto>? result = Repository.Update (dto.Select(x => x.AutoMap<TDomain, TDto> ())).Select (x => x.AutoMap<TDto, TDomain> ());
             return Ok (result);
         } catch (Exception ex) {
             return BadRequest (ex.Message);
@@ -60,7 +61,7 @@ where TIManagger:IManager<TDomain, TKey> {
     [HttpDelete("{id}")]
     public virtual IActionResult Update ([FromRoute] TKey id) {
         try {
-            Manager.Delete (id);
+            Repository.Delete (id);
             return Ok ();
         } catch (Exception ex) {
             return BadRequest (ex.Message);
@@ -70,10 +71,14 @@ where TIManagger:IManager<TDomain, TKey> {
     [HttpDelete("range")]
     public virtual IActionResult Update ([FromHeader] IEnumerable<TKey> ids) {
         try {
-            Manager.Delete (ids);
+            Repository.Delete (ids);
             return Ok ();
         } catch (Exception ex) {
             return BadRequest (ex.Message);
         }
+    }
+
+    public TDto ToDto(TDomain domain){
+        return domain.AutoMap<TDto,TDomain>();
     }
 }
