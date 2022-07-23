@@ -4,7 +4,7 @@ where TDomain: class,new()
 where TEntity: class,new(){
     IEnumerable<TDomain> GetAll ();
     TDomain? FindById (TKey id);
-    TDomain Add(TDomain entity);
+    TDomain Add(TDomain domain);
     IEnumerable<TDomain> Add(IEnumerable<TDomain> domains);
     TDomain Update(TDomain domain);
     IEnumerable<TDomain> Update(IEnumerable<TDomain> domains);

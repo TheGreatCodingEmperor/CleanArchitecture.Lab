@@ -1,7 +1,5 @@
 using Application.Models;
 using Microsoft.EntityFrameworkCore;
-using Application.Manager;
-using Application.Manager.Interface;
 using Application.Repository;
 using Application.Repository.Interface;
 using Api.Data;
@@ -14,13 +12,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<MyContext>(opt => opt.UseSqlite("Data Source=./Database/MyDB.db",  b => b.MigrationsAssembly("Api")));
 
 builder.Services.AddScoped<ICustomerRepository,CustomerRepository>();
-builder.Services.AddScoped<ICustomerManager,CustomerManager>();
 
 builder.Services.AddScoped<IInvoiceRepository,InvoiceRepository>();
-builder.Services.AddScoped<IInvoiceManager,InvoiceManager>();
 
 builder.Services.AddScoped<IInvoiceItemRepository,InvoiceItemRepository>();
-builder.Services.AddScoped<IInvoiceItemManager,InvoiceItemManager>();
 
 builder.Services.AddControllers();
 

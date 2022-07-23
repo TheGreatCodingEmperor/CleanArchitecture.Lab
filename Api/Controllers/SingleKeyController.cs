@@ -5,8 +5,8 @@ using Application.Repository.Interface;
 
 namespace Api.Controllers;
 
-[ApiController]
-[Route ("[controller]")]
+// [ApiController]
+// [Route ("[controller]")]
 public class SingleKeyController<TIRepository,TDto, TDomain,TEntity, TKey> : ControllerBase
 where TDomain : class, new ()
 where TEntity : class, new ()
@@ -78,6 +78,7 @@ where TIRepository:IRepository<TDomain,TEntity, TKey> {
         }
     }
 
+    [NonAction]
     public virtual TDto ToDto(TDomain domain){
         return domain.AutoMap<TDto,TDomain>();
     }
