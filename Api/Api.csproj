@@ -3,11 +3,48 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <SpaRoot>ClientApp\</SpaRoot>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3"/>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.2-mauipre.1.22054.8"/>
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="6.0.1"/>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj"/>
   </ItemGroup>
+  <ItemGroup>
+    <Content Remove="$(SpaRoot)**"/>
+    <None Remove="$(SpaRoot)**"/>
+    <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**"/>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="ClientApp\dist\**"/>
+    <Content Remove="$(SpaRoot)**"/>
+    <Content Remove="ClientApp\dist\**"/>
+    <None Remove="$(SpaRoot)**"/>
+    <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**"/>
+  </ItemGroup>
+  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
+    <Exec Command="node --version" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode"/>
+    </Exec>
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install"/>
+    <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE."/>
+    <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..."/>
+  </Target>
+  <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install"/>
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build -- --prod"/>
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build:ssr -- --prod" Condition=" '$(BuildServerSideRenderer)' == 'true' "/>
+    <ItemGroup>
+      <DistFiles Include="$(SpaRoot)dist\**; $(SpaRoot)dist-server\**"/>
+      <DistFiles Include="$(SpaRoot)node_modules\**" Condition="'$(BuildServerSideRenderer)' == 'true'"/>
+      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+        <RelativePath>%(DistFiles.Identity)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
 </Project>
