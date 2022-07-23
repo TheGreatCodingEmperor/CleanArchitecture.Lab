@@ -1,0 +1,26 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "18136ea9-dc3c-4c0c-9f41-b6888e241f24": {
+      "ProjectGuid": "18136ea9-dc3c-4c0c-9f41-b6888e241f24",
+      "DisplayName": "Api",
+      "ColorIndex": 0
+    },
+    "86a8bf52-9835-4048-8166-e38dfe39d894": {
+      "ProjectGuid": "86a8bf52-9835-4048-8166-e38dfe39d894",
+      "DisplayName": "Application",
+      "ColorIndex": 1
+    },
+    "30646ab4-4439-4f7b-a752-7c94a661e200": {
+      "ProjectGuid": "30646ab4-4439-4f7b-a752-7c94a661e200",
+      "DisplayName": "Core",
+      "ColorIndex": 2
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "其他檔案",
+      "ColorIndex": -1
+    }
+  },
+  "NextColorIndex": 3
+}
