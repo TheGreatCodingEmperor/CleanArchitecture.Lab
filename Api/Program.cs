@@ -1,24 +1,21 @@
 using Application.Models;
 using Microsoft.EntityFrameworkCore;
-using Application.Manager;
-using Application.Manager.Interface;
 using Application.Repository;
 using Application.Repository.Interface;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddDbContext<MyContext>(opt => opt.UseInMemoryDatabase("MyDB"));
+// builder.Services.AddDbContext<MyContext>(opt => opt.UseInMemoryDatabase("MyDB"));
+builder.Services.AddDbContext<MyContext>(opt => opt.UseSqlite("Data Source=./Database/MyDB.db",  b => b.MigrationsAssembly("Api")));
 
 builder.Services.AddScoped<ICustomerRepository,CustomerRepository>();
-builder.Services.AddScoped<ICustomerManager,CustomerManager>();
 
 builder.Services.AddScoped<IInvoiceRepository,InvoiceRepository>();
-builder.Services.AddScoped<IInvoiceManager,InvoiceManager>();
 
 builder.Services.AddScoped<IInvoiceItemRepository,InvoiceItemRepository>();
-builder.Services.AddScoped<IInvoiceItemManager,InvoiceItemManager>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

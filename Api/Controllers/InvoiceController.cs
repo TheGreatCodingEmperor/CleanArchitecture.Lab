@@ -1,23 +1,24 @@
 using Microsoft.AspNetCore.Mvc;
 using Application.Dto;
-using Application.Manager.Interface;
+using Application.Repository.Interface;
 using Core.Domain;
+using DAL.Entity;
 
 namespace Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class InvoiceController : SingleKeyController<InvoiceDto,InvoiceDomain,int>
+public class InvoiceController : SingleKeyController<IInvoiceRepository,InvoiceDto,InvoiceDomain,InvoiceEntity,int>
 {
 
     private readonly ILogger<InvoiceController> _logger;
 
     public InvoiceController(
         ILogger<InvoiceController> logger,
-        IInvoiceManager manager
+        IInvoiceRepository manager
     )
     {
         _logger = logger;
-        Manager = manager;
+        Repository = manager;
     }
 }
