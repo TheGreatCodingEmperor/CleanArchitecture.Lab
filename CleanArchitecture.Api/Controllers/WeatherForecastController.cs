@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using Api.Data;
+using CleanArchitecture.Api;
 using MassTransit;
 using Masstransit.Test.Components.Contracts.Browse;
 
-namespace Api.Controllers;
+namespace CleanArchitecture.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
@@ -18,8 +18,7 @@ public class WeatherForecastController : ControllerBase
     private readonly IRequestClient<BrowseCurrentData> _client;
 
     public WeatherForecastController(
-        ILogger<WeatherForecastController> logger,
-        IRequestClient<BrowseCurrentData> client
+        ILogger<WeatherForecastController> logger
         )
     {
         _logger = logger;
@@ -35,20 +34,5 @@ public class WeatherForecastController : ControllerBase
             Summary = Summaries[Random.Shared.Next(Summaries.Length)]
         })
         .ToArray();
-    }
-
-    [HttpPost]
-    public IActionResult Test([FromBody]BrowseCurrentData query){
-        var (success,failed) = await client.GetResponse<BrowseCurrentDataSuccess,BadRequestViewModel>(query);
-        if(success.IsCompletedSuccessfully){
-            return Results.Accepted(null,success.Result.Message);
-        }
-        if(failed.Result.Message.Status == 400){
-            return Results.BadRequest($"{failed.Result.Message.Title}: {failed.Result.Message.Message}");
-        }
-        else{
-            
-        }
-        return Results.BadRequest($"{failed.Result.Message.Title}: {failed.Result.Message.Message}");
     }
 }

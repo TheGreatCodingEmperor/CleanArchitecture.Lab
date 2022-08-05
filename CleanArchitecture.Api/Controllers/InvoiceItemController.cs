@@ -5,7 +5,7 @@ using Core.Domain;
 using Application.Extension;
 using DAL.Entity;
 
-namespace Api.Controllers;
+namespace CleanArchitecture.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]

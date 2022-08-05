@@ -4,7 +4,7 @@ using Application.Repository;
 using Application.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
 using MassTransit;
-using Api;
+using CleanArchitecture.Api;
 using Masstransit.Test.Components.Contracts.Browse;
 using Masstransit.Test.Components.Models.Exceptions;
 using Newtonsoft.Json;
@@ -14,8 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-// builder.Services.AddDbContext<MyContext>(opt => opt.UseInMemoryDatabase("MyDB"));
-builder.Services.AddDbContext<MyContext>(opt => opt.UseSqlite("Data Source=./Database/MyDB.db",  b => b.MigrationsAssembly("Api")));
+builder.Services.AddDbContext<MyContext>(opt => opt.UseInMemoryDatabase("MyDB"));
+// builder.Services.AddDbContext<MyContext>(opt => opt.UseSqlite("Data Source=./Database/MyDB.db",  b => b.MigrationsAssembly("CleanArchitecture.Api")));
 
 builder.Services.AddScoped<ICustomerRepository,CustomerRepository>();
 

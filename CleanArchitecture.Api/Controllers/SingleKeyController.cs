@@ -3,7 +3,7 @@ using Application.Extension;
 using Microsoft.AspNetCore.Mvc;
 using Application.Repository.Interface;
 
-namespace Api.Controllers;
+namespace CleanArchitecture.Api.Controllers;
 
 // [ApiController]
 // [Route ("[controller]")]
