@@ -6,12 +6,12 @@ public static partial class Extensions {
         var TDistProperties = typeof (TDist).GetProperties ();
         var TSrcProperties = typeof (TSrc).GetProperties ();
         TDist dist = new TDist ();
-        foreach (var prop in TDistProperties) {
-            var prop2 = TSrcProperties.SingleOrDefault (x => string.Equals (x.Name, prop.Name, StringComparison.OrdinalIgnoreCase) && x.PropertyType == prop.PropertyType);
-            if (prop2 == null) {
+        foreach (var distProp in TDistProperties) {
+            var srcProp = TSrcProperties.SingleOrDefault (x => string.Equals (x.Name, distProp.Name, StringComparison.OrdinalIgnoreCase) && x.PropertyType == distProp.PropertyType);
+            if (srcProp == null) {
                 continue;
             } else {
-                prop2.SetValue (dist, prop.GetValue (src));
+                distProp.SetValue (dist, srcProp.GetValue (src));
             }
         }
         return dist;
